@@ -52,10 +52,11 @@ namespace JavaScriptChallenge.Controllers
                     sumOfPropertiesEndingWithA += x;
                 }
             }
+
             ProblemInstance prob = new ProblemInstance();
             prob.UserId = User.Identity.GetUserId();
             prob.ProblemId = 1;
-            prob.startTime = DateTime.Now;
+            prob.StartTime = DateTime.Now;
             prob.ExpectedSolution = sumOfPropertiesEndingWithA.ToString();
 
             using (var ctx = new Entities())
@@ -76,7 +77,7 @@ namespace JavaScriptChallenge.Controllers
 
         [Authorize]
         [HttpPost]
-        public JsonResult Problem1(int problemId, string proposedSolution)
+        public JsonResult Problem1(int problemId, string proposedSolution, string solutionCode)
         {
             bool result = false;
 
@@ -91,8 +92,9 @@ namespace JavaScriptChallenge.Controllers
                     result = problemInstances.First().ExpectedSolution == proposedSolution;
                     if (result)
                     {
-                        problemInstances.First().solveTime = DateTime.Now;
+                        problemInstances.First().SolveTime = DateTime.Now;
                     }
+                    problemInstances.First().SubmittedSolution = solutionCode;
                 }
                 ctx.SaveChanges();
             }

@@ -1,0 +1,73 @@
+﻿@model JavaScriptChallenge.ProblemInstance
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>ProblemInstance</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProblemId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProblemId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpectedSolution)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExpectedSolution)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SolveTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SolveTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SubmittedSolution)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SubmittedSolution)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AspNetUser.UserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AspNetUser.UserName)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

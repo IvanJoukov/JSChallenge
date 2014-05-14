@@ -1,0 +1,67 @@
+﻿@model JavaScriptChallenge.ProblemInstance
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ProblemInstance</h4>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProblemId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProblemId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpectedSolution)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExpectedSolution)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SolveTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SolveTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SubmittedSolution)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SubmittedSolution)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AspNetUser.UserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AspNetUser.UserName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

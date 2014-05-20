@@ -31,5 +31,6 @@ namespace JavaScriptChallenge
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<ProblemInstance> ProblemInstances { get; set; }
+        public virtual DbSet<Problem> Problems { get; set; }
     }
 }

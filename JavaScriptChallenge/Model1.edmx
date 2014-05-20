@@ -59,6 +59,19 @@
           <Property Name="SecurityStamp" Type="nvarchar(max)" />
           <Property Name="Discriminator" Type="nvarchar" MaxLength="128" Nullable="false" />
         </EntityType>
+        <EntityType Name="Problem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProblemNumber" Type="int" Nullable="false" />
+          <Property Name="StarterSolutionCode" Type="nvarchar(max)" />
+          <Property Name="SetupJavaScript" Type="nvarchar(max)" />
+          <Property Name="CorrectAnswer" Type="nvarchar(max)" />
+          <Property Name="ProblemTitle" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProblemDescription" Type="nvarchar(max)" />
+          <Property Name="CSVDisallowedWords" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="ProblemInstance">
           <Key>
             <PropertyRef Name="Id" />
@@ -66,10 +79,10 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ProblemId" Type="int" Nullable="false" />
           <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="ExpectedSolution" Type="nvarchar(max)" Nullable="false" />
           <Property Name="StartTime" Type="datetime" Nullable="false" />
           <Property Name="SolveTime" Type="datetime" />
           <Property Name="SubmittedSolution" Type="nvarchar(max)" />
+          <Property Name="FailedAttempts" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_User_Id">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
@@ -127,7 +140,19 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ProblemInstance_ToTable">
+        <Association Name="FK_ProblemInstance_ToProblem">
+          <End Role="Problem" Type="Self.Problem" Multiplicity="1" />
+          <End Role="ProblemInstance" Type="Self.ProblemInstance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Problem">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProblemInstance">
+              <PropertyRef Name="ProblemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProblemInstance_ToUser">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
           <End Role="ProblemInstance" Type="Self.ProblemInstance" Multiplicity="*" />
           <ReferentialConstraint>
@@ -146,6 +171,7 @@
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Problem" EntityType="Self.Problem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProblemInstance" EntityType="Self.ProblemInstance" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_User_Id" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_User_Id">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -163,7 +189,11 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
           </AssociationSet>
-          <AssociationSet Name="FK_ProblemInstance_ToTable" Association="Self.FK_ProblemInstance_ToTable">
+          <AssociationSet Name="FK_ProblemInstance_ToProblem" Association="Self.FK_ProblemInstance_ToProblem">
+            <End Role="Problem" EntitySet="Problem" />
+            <End Role="ProblemInstance" EntitySet="ProblemInstance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProblemInstance_ToUser" Association="Self.FK_ProblemInstance_ToUser">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="ProblemInstance" EntitySet="ProblemInstance" />
           </AssociationSet>
@@ -232,11 +262,12 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ProblemId" Type="Int32" Nullable="false" />
           <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ExpectedSolution" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_ProblemInstance_ToTable" FromRole="ProblemInstance" ToRole="AspNetUsers" />
           <Property Name="StartTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="SolveTime" Type="DateTime" Precision="3" />
           <Property Name="SubmittedSolution" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FailedAttempts" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Problem" Relationship="Model.FK_ProblemInstance_ToProblem" FromRole="ProblemInstance" ToRole="Problem" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_User_Id">
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
@@ -305,7 +336,38 @@
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
+          <EntitySet Name="Problems" EntityType="Model.Problem" />
+          <AssociationSet Name="FK_ProblemInstance_ToProblem" Association="Model.FK_ProblemInstance_ToProblem">
+            <End Role="Problem" EntitySet="Problems" />
+            <End Role="ProblemInstance" EntitySet="ProblemInstances" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Problem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProblemNumber" Type="Int32" Nullable="false" />
+          <Property Name="StarterSolutionCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SetupJavaScript" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CorrectAnswer" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProblemTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProblemDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CSVDisallowedWords" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ProblemInstances" Relationship="Model.FK_ProblemInstance_ToProblem" FromRole="Problem" ToRole="ProblemInstance" />
+        </EntityType>
+        <Association Name="FK_ProblemInstance_ToProblem">
+          <End Type="Model.Problem" Role="Problem" Multiplicity="1" />
+          <End Type="Model.ProblemInstance" Role="ProblemInstance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Problem">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProblemInstance">
+              <PropertyRef Name="ProblemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -363,13 +425,13 @@
           <EntitySetMapping Name="ProblemInstances">
             <EntityTypeMapping TypeName="Model.ProblemInstance">
               <MappingFragment StoreEntitySet="ProblemInstance">
+                <ScalarProperty Name="FailedAttempts" ColumnName="FailedAttempts" />
                 <ScalarProperty Name="SubmittedSolution" ColumnName="SubmittedSolution" />
                 <ScalarProperty Name="SolveTime" ColumnName="SolveTime" />
                 <ScalarProperty Name="StartTime" ColumnName="StartTime" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ProblemId" ColumnName="ProblemId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="ExpectedSolution" ColumnName="ExpectedSolution" />
                 </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -381,6 +443,20 @@
               <ScalarProperty Name="Id" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="Problems">
+            <EntityTypeMapping TypeName="Model.Problem">
+              <MappingFragment StoreEntitySet="Problem">
+                <ScalarProperty Name="CSVDisallowedWords" ColumnName="CSVDisallowedWords" />
+                <ScalarProperty Name="ProblemDescription" ColumnName="ProblemDescription" />
+                <ScalarProperty Name="ProblemTitle" ColumnName="ProblemTitle" />
+                <ScalarProperty Name="CorrectAnswer" ColumnName="CorrectAnswer" />
+                <ScalarProperty Name="SetupJavaScript" ColumnName="SetupJavaScript" />
+                <ScalarProperty Name="StarterSolutionCode" ColumnName="StarterSolutionCode" />
+                <ScalarProperty Name="ProblemNumber" ColumnName="ProblemNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

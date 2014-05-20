@@ -52,25 +52,32 @@ namespace JavaScriptChallenge.Controllers
                     sumOfPropertiesEndingWithA += x;
                 }
             }
+            Problem problem = new Problem();
+            problem.ProblemNumber = 1;
+            problem.CorrectAnswer = sumOfPropertiesEndingWithA.ToString();
+            problem.ProblemDescription = "Oh no!  Due to a garbled hyperspace transmission, your input data has been corrupted.  Fortunately, you suspect that you can salvage the data you need."
+                + "You suspect that the data you want is numerical, and is spread across all the input object's properties that end in 'a'.  Find the sum of all those properties.";
+            problem.ProblemTitle = "Sum Properties";
+            problem.StarterSolutionCode = "(function solution(input) {\n    var result = \"solve for me\";\n" +
+                "   // Put solution \n    return result;\n})(input);";
 
-            ProblemInstance prob = new ProblemInstance();
-            prob.UserId = User.Identity.GetUserId();
-            prob.ProblemId = 1;
-            prob.StartTime = DateTime.Now;
-            prob.ExpectedSolution = sumOfPropertiesEndingWithA.ToString();
+            ProblemInstance probInstace = new ProblemInstance();
+            probInstace.UserId = User.Identity.GetUserId();
+            probInstace.StartTime = DateTime.Now;
+            probInstace.Problem = problem;
 
             using (var ctx = new Entities())
             {
-                ctx.ProblemInstances.Add(prob);
+                ctx.Problems.Add(problem);
+                ctx.ProblemInstances.Add(probInstace);
                 ctx.SaveChanges();
             }
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             var jsonObject = serializer.Serialize(result);
-            ViewBag.serializedData = jsonObject;
-            ViewBag.problemInstance = prob.Id;
-
-            ViewBag.ProblemDescription = "Oh no!  Due to a garbled hyperspace transmission, your input data has been corrupted.  Fortunately, you suspect that you can salvage the data you need."
-                + "You suspect that the data you want is numerical, and is spread across all the input object's properties that end in 'a'.  Find the sum of all those properties.";
+            ViewBag.SetupJavaScriptCode = "var input = JSON.parse('" + jsonObject + "');";
+            ViewBag.problemInstance = problem.Id;
+            ViewBag.ProblemDescription = problem.ProblemDescription;
+            ViewBag.StarterSolutionCode = problem.StarterSolutionCode;
 
             return View();
         }
@@ -85,14 +92,18 @@ namespace JavaScriptChallenge.Controllers
             {
                 var userId = User.Identity.GetUserId();
                 var problemInstances = ctx.ProblemInstances.Where(p => p.Id == problemId && 
-                    p.UserId == userId && p.ProblemId == 1);
+                    p.UserId == userId && p.Problem.ProblemNumber == 1);
 
                 if (problemInstances.Any())
                 {
-                    result = problemInstances.First().ExpectedSolution == proposedSolution;
-                    if (result)
+                    result = problemInstances.First().Problem.CorrectAnswer == proposedSolution;
+                    if (result) // correct answer
                     {
                         problemInstances.First().SolveTime = DateTime.Now;
+                    }
+                    else // wrong answer
+                    {
+                        problemInstances.First().FailedAttempts++;
                     }
                     problemInstances.First().SubmittedSolution = solutionCode;
                 }

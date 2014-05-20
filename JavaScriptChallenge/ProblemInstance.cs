@@ -17,11 +17,12 @@ namespace JavaScriptChallenge
         public int Id { get; set; }
         public int ProblemId { get; set; }
         public string UserId { get; set; }
-        public string ExpectedSolution { get; set; }
         public System.DateTime StartTime { get; set; }
         public Nullable<System.DateTime> SolveTime { get; set; }
         public string SubmittedSolution { get; set; }
+        public int FailedAttempts { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
+        public virtual Problem Problem { get; set; }
     }
 }

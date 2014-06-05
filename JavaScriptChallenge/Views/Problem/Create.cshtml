@@ -1,0 +1,110 @@
+﻿@model JavaScriptChallenge.Problem
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Problem</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProblemNumber, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ProblemNumber)
+                @Html.ValidationMessageFor(model => model.ProblemNumber)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StarterSolutionCode, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div id="starter-solution-editor" class="problem-ace-editor">@Html.Raw(ViewBag.SetupJavaScript)</div>
+                @Html.ValidationMessageFor(model => model.StarterSolutionCode)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SetupJavaScript, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div id="setup-js-editor" class="problem-ace-editor">@Html.Raw(ViewBag.SetupJavaScript)</div>
+                @Html.ValidationMessageFor(model => model.SetupJavaScript)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CorrectAnswer, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CorrectAnswer)
+                @Html.ValidationMessageFor(model => model.CorrectAnswer)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProblemTitle, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ProblemTitle)
+                @Html.ValidationMessageFor(model => model.ProblemTitle)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProblemDescription, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.ProblemDescription)
+                @Html.ValidationMessageFor(model => model.ProblemDescription)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CSVDisallowedWords, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.CSVDisallowedWords)
+                @Html.ValidationMessageFor(model => model.CSVDisallowedWords)
+            </div>
+        </div>
+        @Html.HiddenFor(model => model.StarterSolutionCode,  new { @id = "starter-solution-editor-hidden" })
+        @Html.HiddenFor(model => model.SetupJavaScript, new { @id = "setup-js-editor-hidden" })
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    window.onload = function () {
+        debugger;
+        var starterEditor = ace.edit("starter-solution-editor");
+        starterEditor.setTheme("ace/theme/monokai")
+        starterEditor.getSession().setMode("ace/mode/javascript");
+
+        var setupJSEditor = ace.edit("setup-js-editor");
+        setupJSEditor.setTheme("ace/theme/monokai")
+        setupJSEditor.getSession().setMode("ace/mode/javascript");
+        $("form").submit(function () {
+            $("#starter-solution-editor-hidden").val(starterEditor.getSession().getValue());
+            $("#setup-js-editor-hidden").val(setupJSEditor.getSession().getValue());
+        });
+    };
+
+
+</script>

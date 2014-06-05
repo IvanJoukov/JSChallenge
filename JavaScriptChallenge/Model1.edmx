@@ -84,6 +84,14 @@
           <Property Name="SubmittedSolution" Type="nvarchar(max)" />
           <Property Name="FailedAttempts" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="ProblemUnlock">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="ProblemNumber" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" />
+        </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_User_Id">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -173,6 +181,7 @@
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Problem" EntityType="Self.Problem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProblemInstance" EntityType="Self.ProblemInstance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProblemUnlock" EntityType="Self.ProblemUnlock" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_User_Id" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_User_Id">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
@@ -341,6 +350,7 @@
             <End Role="Problem" EntitySet="Problems" />
             <End Role="ProblemInstance" EntitySet="ProblemInstances" />
           </AssociationSet>
+          <EntitySet Name="ProblemUnlocks" EntityType="Model.ProblemUnlock" />
         </EntityContainer>
         <EntityType Name="Problem">
           <Key>
@@ -368,6 +378,14 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ProblemUnlock">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="ProblemNumber" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -452,6 +470,15 @@
                 <ScalarProperty Name="CorrectAnswer" ColumnName="CorrectAnswer" />
                 <ScalarProperty Name="SetupJavaScript" ColumnName="SetupJavaScript" />
                 <ScalarProperty Name="StarterSolutionCode" ColumnName="StarterSolutionCode" />
+                <ScalarProperty Name="ProblemNumber" ColumnName="ProblemNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProblemUnlocks">
+            <EntityTypeMapping TypeName="Model.ProblemUnlock">
+              <MappingFragment StoreEntitySet="ProblemUnlock">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="ProblemNumber" ColumnName="ProblemNumber" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System.IO;
 using System.Data.Entity.Core.Objects;
 using JavaScriptChallenge;
+using JavaScriptChallenge.Models;
 
 namespace JavaScriptChallenge.Controllers
 {
@@ -17,25 +18,25 @@ namespace JavaScriptChallenge.Controllers
     {
         public ActionResult Index()
         {
-            return View();
-        }
+            using (var ctx = new Entities())
+            {
+               var problems = ctx.Problems.GroupBy(p => p.ProblemNumber).Select(s => new ProblemViewModel
+               {
+                    ProblemNumber = s.FirstOrDefault().ProblemNumber,
+                    ProblemTitle = s.FirstOrDefault().ProblemTitle,
+                    Unlocked = false
+               }).ToList();
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+               foreach(var p in problems)
+               {
+                   p.Unlocked = ProblemUnlocked(p.ProblemNumber);
+               }
+               return View(problems);
+            }
         }
 
         [Authorize]
-        public ActionResult Problem1()
+        private ActionResult Problem1()
         {
             ViewBag.Message = "Problem 1.";
             int sumOfPropertiesEndingWithA = 0;
@@ -61,21 +62,22 @@ namespace JavaScriptChallenge.Controllers
             problem.StarterSolutionCode = "(function solution(input) {\n    var result = \"solve for me\";\n" +
                 "   // Put solution \n    return result;\n})(input);";
 
-            ProblemInstance probInstace = new ProblemInstance();
-            probInstace.UserId = User.Identity.GetUserId();
-            probInstace.StartTime = DateTime.Now;
-            probInstace.Problem = problem;
+            ProblemInstance probInstance = new ProblemInstance();
+            probInstance.UserId = User.Identity.GetUserId();
+            probInstance.StartTime = DateTime.Now;
+            probInstance.Problem = problem;
 
             using (var ctx = new Entities())
             {
                 ctx.Problems.Add(problem);
-                ctx.ProblemInstances.Add(probInstace);
+                ctx.ProblemInstances.Add(probInstance);
                 ctx.SaveChanges();
             }
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             var jsonObject = serializer.Serialize(result);
             ViewBag.SetupJavaScriptCode = "var input = JSON.parse('" + jsonObject + "');";
-            ViewBag.problemInstance = problem.Id;
+            ViewBag.ProblemId = problem.Id;
+            ViewBag.ProblemInstanceId = probInstance.Id;
             ViewBag.ProblemDescription = problem.ProblemDescription;
             ViewBag.StarterSolutionCode = problem.StarterSolutionCode;
 
@@ -83,16 +85,56 @@ namespace JavaScriptChallenge.Controllers
         }
 
         [Authorize]
+        public ActionResult Problem(int? id)
+        {
+            if (id.HasValue && !ProblemUnlocked(id.Value))
+                return HttpNotFound();
+
+            ActionResult customResult = CustomProblemMethod(id ?? -1);
+            if (customResult != null)
+                return customResult;
+
+            Problem problem;
+            ProblemInstance probInstance;
+            using (var ctx = new Entities())
+            {
+                problem = ctx.Problems.FirstOrDefault(p => p.ProblemNumber == id);
+
+                if (problem == null)
+                    return HttpNotFound();
+
+                probInstance = new ProblemInstance();
+                probInstance.UserId = User.Identity.GetUserId();
+                probInstance.StartTime = DateTime.Now;
+                probInstance.Problem = problem;
+
+                ctx.ProblemInstances.Add(probInstance);
+                ctx.SaveChanges();
+            }
+
+            ViewBag.SetupJavaScriptCode = problem.SetupJavaScript;
+            ViewBag.problemInstance = problem.Id;
+
+            ViewBag.ProblemId = problem.Id;
+            ViewBag.ProblemInstanceId = probInstance.Id;
+            ViewBag.ProblemDescription = problem.ProblemDescription;
+            ViewBag.StarterSolutionCode = problem.StarterSolutionCode;
+
+            return View("Problem");
+        }
+    
+
+        [Authorize]
         [HttpPost]
-        public JsonResult Problem1(int problemId, string proposedSolution, string solutionCode)
+        public JsonResult Problem(int problemId, int problemInstanceId, string proposedSolution, string solutionCode)
         {
             bool result = false;
 
             using (var ctx = new Entities())
             {
                 var userId = User.Identity.GetUserId();
-                var problemInstances = ctx.ProblemInstances.Where(p => p.Id == problemId && 
-                    p.UserId == userId && p.Problem.ProblemNumber == 1);
+                var problemInstances = ctx.ProblemInstances.Where(p => p.Id == problemInstanceId && 
+                    p.UserId == userId && p.ProblemId == problemId);
 
                 if (problemInstances.Any())
                 {
@@ -111,6 +153,33 @@ namespace JavaScriptChallenge.Controllers
             }
 
             return Json(result);
+        }
+
+        private ActionResult CustomProblemMethod(int problemNumber)
+        {
+            ActionResult result;
+
+            // Any problem methods that need custom code should be added here
+            // as needed.
+            switch(problemNumber) {
+                case 1:
+                    result = Problem1();
+                    break;
+                default:
+                    result = null;
+                    break;
+            }
+            return result;
+        }
+
+        private bool ProblemUnlocked(int problemNumber)
+        {
+            using (var ctx = new Entities())
+            {
+                var userId = User.Identity.GetUserId();
+                return ctx.ProblemUnlocks.Any(p => (p.UserId == userId || string.IsNullOrEmpty(p.UserId))
+                    && p.ProblemNumber == problemNumber);
+            }
         }
     }
 }

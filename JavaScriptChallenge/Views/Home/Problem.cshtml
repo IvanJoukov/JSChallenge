@@ -18,7 +18,7 @@
     $(document).ready(function () {
         $("#submit").click(function () {
             debugger;
-            $.post("Problem1", {problemId:@ViewBag.problemInstance, proposedSolution:$("#proposedSolution").val(), solutionCode: editor.getValue()}, function(result) {
+            $.post("", {problemId:@ViewBag.ProblemId, problemInstanceId:@ViewBag.ProblemInstanceId, proposedSolution:$("#proposedSolution").val(), solutionCode: editor.getValue()}, function(result) {
                 debugger;
             }, "json");
         });

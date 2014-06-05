@@ -1,0 +1,75 @@
+﻿@model JavaScriptChallenge.Problem
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Problem</h4>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProblemNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProblemNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StarterSolutionCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StarterSolutionCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SetupJavaScript)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SetupJavaScript)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CorrectAnswer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CorrectAnswer)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProblemTitle)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProblemTitle)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProblemDescription)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProblemDescription)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CSVDisallowedWords)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CSVDisallowedWords)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

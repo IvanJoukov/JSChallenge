@@ -1,0 +1,70 @@
+﻿@model IEnumerable<JavaScriptChallenge.Problem>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ProblemNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StarterSolutionCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SetupJavaScript)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CorrectAnswer)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProblemTitle)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProblemDescription)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CSVDisallowedWords)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProblemNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StarterSolutionCode)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SetupJavaScript)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CorrectAnswer)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProblemTitle)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProblemDescription)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CSVDisallowedWords)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

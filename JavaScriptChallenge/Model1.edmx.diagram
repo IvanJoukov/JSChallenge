@@ -17,6 +17,7 @@
         <AssociationConnector Association="Model.AspNetUserRoles" ManuallyRouted="false" />
         <EntityTypeShape EntityType="Model.Problem" Width="1.5" PointX="7.375" PointY="1" />
         <AssociationConnector Association="Model.FK_ProblemInstance_ToProblem" />
+        <EntityTypeShape EntityType="Model.ProblemUnlock" Width="1.5" PointX="0.75" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -175,6 +175,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LeaderboardController.cs" />
+    <Compile Include="Controllers\ProblemController.cs" />
     <Compile Include="C__MigrationHistory.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -196,6 +197,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProblemViewModel.cs" />
     <Compile Include="Models\LeaderboardViewModel.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -203,6 +205,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="ProblemInstance.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProblemUnlock.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -217,7 +222,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Views\Home\Problem1.cshtml" />
+    <Content Include="Views\Home\Problem.cshtml" />
     <EntityDeploy Include="Model1.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Model1.Designer.cs</LastGenOutput>
@@ -294,9 +299,15 @@
     <Content Include="Views\Leaderboard\Edit.cshtml" />
     <Content Include="Views\Leaderboard\Index.cshtml" />
     <Content Include="Views\Leaderboard\Scores.cshtml" />
+    <Content Include="Views\Problem\Create.cshtml" />
+    <Content Include="Views\Problem\Delete.cshtml" />
+    <Content Include="Views\Problem\Details.cshtml" />
+    <Content Include="Views\Problem\Edit.cshtml" />
+    <Content Include="Views\Problem\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

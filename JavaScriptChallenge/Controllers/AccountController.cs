@@ -15,6 +15,11 @@ namespace JavaScriptChallenge.Controllers
     [Authorize]
     public class AccountController : Controller
     {
+        private static Dictionary<string, string> userRoles = new Dictionary<string, string>() {
+            {"ivanjoukov", "admin"},
+            {"administrator", "admin"}
+        };
+
         public AccountController()
             : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
         {
@@ -80,6 +85,7 @@ namespace JavaScriptChallenge.Controllers
             {
                 var user = new ApplicationUser() { UserName = model.UserName };
                 var result = await UserManager.CreateAsync(user, model.Password);
+                setRoles();
                 if (result.Succeeded)
                 {
                     await SignInAsync(user, isPersistent: false);
@@ -404,5 +410,27 @@ namespace JavaScriptChallenge.Controllers
             }
         }
         #endregion
+        private void setRoles()
+        {
+            using (var rm = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext())))
+            using (var um = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
+                foreach (var item in userRoles)
+                {
+                    if (!rm.RoleExists(item.Value))
+                    {
+                        var roleResult = rm.Create(new IdentityRole(item.Value));
+                        if (!roleResult.Succeeded)
+                            throw new ApplicationException("Creating role " + item.Value + "failed with error(s): " + roleResult.Errors);
+                    }
+                    var user = um.FindByName(item.Key);
+                    if (!um.IsInRole(user.Id, item.Value))
+                    {
+                        var userResult = um.AddToRole(user.Id, item.Value);
+                        if (!userResult.Succeeded)
+                            throw new ApplicationException("Adding user '" + item.Key + "' to '" + item.Value + "' role failed with error(s): " + userResult.Errors);
+                    }
+                }
+        }
+    
     }
 }

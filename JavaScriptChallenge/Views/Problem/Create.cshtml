@@ -28,7 +28,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.StarterSolutionCode, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <div id="starter-solution-editor" class="problem-ace-editor">@Html.Raw(ViewBag.SetupJavaScript)</div>
+                <div id="starter-solution-editor" class="problem-ace-editor"></div>
                 @Html.ValidationMessageFor(model => model.StarterSolutionCode)
             </div>
         </div>
@@ -36,7 +36,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.SetupJavaScript, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <div id="setup-js-editor" class="problem-ace-editor">@Html.Raw(ViewBag.SetupJavaScript)</div>
+                <div id="setup-js-editor" class="problem-ace-editor"></div>
                 @Html.ValidationMessageFor(model => model.SetupJavaScript)
             </div>
         </div>

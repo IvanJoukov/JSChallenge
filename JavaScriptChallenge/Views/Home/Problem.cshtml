@@ -9,6 +9,8 @@
     Solution: <input type="text" id="proposedSolution" />
     <button type="button" id="evaluate">evaluate</button>
     <button type="button" id="submit">Submit</button>
+    <span class="correct-answer">Congratulations! You got the right answer.  Click the link to pick the next @Html.ActionLink("Problem", "Index", "Home"). </span>
+    <span class="wrong-answer">Sorry that was not the right answer.  Please try again.</span>
 </div>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
@@ -20,6 +22,16 @@
             debugger;
             $.post("", {problemId:@ViewBag.ProblemId, problemInstanceId:@ViewBag.ProblemInstanceId, proposedSolution:$("#proposedSolution").val(), solutionCode: editor.getValue()}, function(result) {
                 debugger;
+                if (result)
+                {
+                    $(".correct-answer").show();
+                    $(".wrong-answer").hide();
+                }
+                else
+                {
+                    $(".correct-answer").hide();
+                    $(".wrong-answer").show();
+                }
             }, "json");
         });
 

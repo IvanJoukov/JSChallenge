@@ -88,7 +88,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ProblemNumber" Type="int" Nullable="false" />
           <Property Name="UserId" Type="nvarchar" MaxLength="128" />
         </EntityType>

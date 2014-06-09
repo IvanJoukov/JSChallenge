@@ -16,7 +16,7 @@
             @Html.DisplayNameFor(model => model.ProblemId)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ExpectedSolution)
+            @Html.DisplayNameFor(model => model.Problem.CorrectAnswer)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.StartTime)
@@ -39,7 +39,7 @@
             @Html.DisplayFor(modelItem => item.ProblemId)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.ExpectedSolution)
+            @Html.DisplayFor(modelItem => item.Problem.CorrectAnswer)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.StartTime)

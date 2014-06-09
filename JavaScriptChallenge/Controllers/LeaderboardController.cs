@@ -11,6 +11,7 @@ using JavaScriptChallenge.Models;
 
 namespace JavaScriptChallenge.Controllers
 {
+    [Authorize(Roles="admin")]
     public class LeaderboardController : Controller
     {
         private Entities db = new Entities();
@@ -21,6 +22,7 @@ namespace JavaScriptChallenge.Controllers
         }
 
         // GET: /Leaderboard/Scores
+        [AllowAnonymous]
         public ActionResult Scores(int? id)
         {
             IQueryable<ProblemInstance> probleminstances;
@@ -60,7 +62,7 @@ namespace JavaScriptChallenge.Controllers
         }
 
         // GET: /Leaderboard/
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public ActionResult Index()
         {
             var probleminstances = db.ProblemInstances.Include(p => p.AspNetUser);
@@ -84,7 +86,7 @@ namespace JavaScriptChallenge.Controllers
         }
 
         // GET: /Leaderboard/Create
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public ActionResult Create()
         {
             ViewBag.UserId = new SelectList(db.AspNetUsers, "Id", "UserName");
@@ -96,7 +98,7 @@ namespace JavaScriptChallenge.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public ActionResult Create([Bind(Include="Id,ProblemId,UserId,ExpectedSolution,StartTime,SolveTime,SubmittedSolution")] ProblemInstance probleminstance)
         {
             if (ModelState.IsValid)
@@ -131,7 +133,6 @@ namespace JavaScriptChallenge.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize (Roles = "Admin")]
         public ActionResult Edit([Bind(Include="Id,ProblemId,UserId,ExpectedSolution,StartTime,SolveTime,SubmittedSolution")] ProblemInstance probleminstance)
         {
             if (ModelState.IsValid)
@@ -145,7 +146,6 @@ namespace JavaScriptChallenge.Controllers
         }
 
         // GET: /Leaderboard/Delete/5
-        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)

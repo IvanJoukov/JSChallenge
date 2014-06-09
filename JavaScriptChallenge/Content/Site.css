@@ -60,3 +60,12 @@ input[type="checkbox"].input-validation-error {
 {
     height:200px;
 }
+
+.correct-answer{
+    display:none;
+    color: GREEN;
+}
+.wrong-answer{
+    display:none;
+    color: red;
+}

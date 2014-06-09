@@ -16,6 +16,7 @@ namespace JavaScriptChallenge.Controllers
     [Authorize]
     public class HomeController : Controller
     {
+        [AllowAnonymous]
         public ActionResult Index()
         {
             using (var ctx = new Entities())
@@ -138,10 +139,21 @@ namespace JavaScriptChallenge.Controllers
 
                 if (problemInstances.Any())
                 {
-                    result = problemInstances.First().Problem.CorrectAnswer == proposedSolution;
+                    var problemInstance = problemInstances.First();
+                    result = problemInstance.Problem.CorrectAnswer == proposedSolution;
                     if (result) // correct answer
                     {
-                        problemInstances.First().SolveTime = DateTime.Now;
+                        problemInstance.SolveTime = DateTime.Now;
+                        if (!ctx.ProblemUnlocks.Any(pu => pu.UserId == userId && pu.ProblemNumber == problemInstance.Problem.ProblemNumber + 1))
+                        {
+                            ProblemUnlock unlockNext = new ProblemUnlock()
+                                {
+                                    //Unlock the next problem.
+                                    ProblemNumber = problemInstance.Problem.ProblemNumber + 1,
+                                    UserId = userId
+                                };
+                            ctx.ProblemUnlocks.Add(unlockNext);
+                        }
                     }
                     else // wrong answer
                     {

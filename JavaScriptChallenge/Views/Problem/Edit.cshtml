@@ -29,7 +29,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.StarterSolutionCode, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.StarterSolutionCode)
+                <div id="starter-solution-editor" class="problem-ace-editor">@Html.Raw(Model.StarterSolutionCode)</div>
                 @Html.ValidationMessageFor(model => model.StarterSolutionCode)
             </div>
         </div>
@@ -37,7 +37,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.SetupJavaScript, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.SetupJavaScript)
+                <div id="setup-js-editor" class="problem-ace-editor">@Html.Raw(Model.SetupJavaScript)</div>
                 @Html.ValidationMessageFor(model => model.SetupJavaScript)
             </div>
         </div>
@@ -73,7 +73,8 @@
                 @Html.ValidationMessageFor(model => model.CSVDisallowedWords)
             </div>
         </div>
-
+        @Html.HiddenFor(model => model.StarterSolutionCode,  new { @id = "starter-solution-editor-hidden" })
+        @Html.HiddenFor(model => model.SetupJavaScript, new { @id = "setup-js-editor-hidden" })
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-default" />
@@ -89,3 +90,23 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    window.onload = function () {
+        debugger;
+        var starterEditor = ace.edit("starter-solution-editor");
+        starterEditor.setTheme("ace/theme/monokai")
+        starterEditor.getSession().setMode("ace/mode/javascript");
+
+        var setupJSEditor = ace.edit("setup-js-editor");
+        setupJSEditor.setTheme("ace/theme/monokai")
+        setupJSEditor.getSession().setMode("ace/mode/javascript");
+        $("form").submit(function () {
+            $("#starter-solution-editor-hidden").val(starterEditor.getSession().getValue());
+            $("#setup-js-editor-hidden").val(setupJSEditor.getSession().getValue());
+        });
+    };
+
+
+</script>

@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using JavaScriptChallenge;
 using JavaScriptChallenge.Models;
+using Microsoft.AspNet.Identity;
 
 namespace JavaScriptChallenge.Controllers
 {
@@ -18,18 +19,14 @@ namespace JavaScriptChallenge.Controllers
 
         private static int CompareLeadersByScore(LeaderboardViewModel x, LeaderboardViewModel y)
         {
-            return x.Score.CompareTo(y.Score);
+            return y.Score.CompareTo(x.Score);
         }
 
         // GET: /Leaderboard/Scores
         [AllowAnonymous]
-        public ActionResult Scores(int? id)
+        public ActionResult Scores(int id)
         {
-            IQueryable<ProblemInstance> probleminstances;
-            if (id == null)
-                probleminstances = db.ProblemInstances.Include(p => p.AspNetUser);
-            else
-                probleminstances = db.ProblemInstances.Where(p => p.ProblemId == id).Include(p => p.AspNetUser).OrderBy(p => p.Id);
+            IQueryable<ProblemInstance> probleminstances = db.ProblemInstances.Where(p => p.Problem.ProblemNumber == id && p.SolveTime != null).Include(p => p.AspNetUser).OrderBy(p => p.Id);
 
 
             var groupedByUser = probleminstances.GroupBy(p => p.AspNetUser);
@@ -42,22 +39,48 @@ namespace JavaScriptChallenge.Controllers
                 leader.FailedAttempts = user.Count(p => p.SolveTime == null);
                 
                 if (solvedInstance != null) {
-                    leader.SubmittedSolution = solvedInstance.SubmittedSolution;
+                    leader.SubmittedSolution = "You must solve this problem before you can see other's solutions.";
+                    string currentUserId = User.Identity.GetUserId();
+                    if (probleminstances.Any(p => p.UserId == currentUserId))
+                        leader.SubmittedSolution = solvedInstance.SubmittedSolution;
                     TimeSpan timeToSolve = solvedInstance.SolveTime.Value - solvedInstance.StartTime;
                     leader.TimeToSolve = timeToSolve.ToString();
                     leader.Score = 1000 - (50 * leader.FailedAttempts) - 1 * timeToSolve.Seconds;
-                }
-                else
-                {
-                    leader.SubmittedSolution = "Did Not Solve.";
-                    TimeSpan timeToSolve = DateTime.Now - user.First().StartTime;
-                    leader.TimeToSolve = timeToSolve.ToString();
-                    leader.Score = 0 - (50 * leader.FailedAttempts) - 1 * timeToSolve.Seconds;
                 }
                 leaders.Add(leader);
             }
 
             leaders.Sort(CompareLeadersByScore);
+            ViewBag.AvailableProblems = db.Problems.Select(p => p.ProblemNumber).Distinct();
+            ViewBag.ProblemNumber = id;
+            return View(leaders);
+        }
+
+        // GET: /Leaderboard/Scores
+        [AllowAnonymous]
+        public ActionResult OverallScores()
+        {
+            IQueryable<ProblemInstance> probleminstances = db.ProblemInstances.Where(p => p.SolveTime != null).Include(p => p.AspNetUser);
+
+            var groupedByUser = probleminstances.GroupBy(p => p.AspNetUser);
+            List<LeaderboardViewModel> leaders = new List<LeaderboardViewModel>();
+            foreach (var user in groupedByUser)
+            {
+                LeaderboardViewModel leader = new LeaderboardViewModel();
+                leader.UserName = user.Key.UserName;
+                leader.ProblemsSolved = user.Count(p => p.SolveTime != null);
+
+                // sum solved problems
+                foreach (var solvedInstance in user.Where(p => p.SolveTime != null))
+                {
+                    TimeSpan timeToSolve = solvedInstance.SolveTime.Value - solvedInstance.StartTime;
+                    leader.Score += 1000 - (50 * leader.FailedAttempts) - 1 * timeToSolve.Seconds;
+                }
+                leaders.Add(leader);
+            }
+
+            leaders.Sort(CompareLeadersByScore);
+            ViewBag.AvailableProblems = db.Problems.Select(p => p.ProblemNumber).Distinct();
             return View(leaders);
         }
 

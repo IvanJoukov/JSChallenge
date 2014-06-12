@@ -18,6 +18,9 @@ namespace JavaScriptChallenge.Models
         [Display(Name = "Time to Solve")]
         public string TimeToSolve { get; set; }
 
+        [Display(Name = "Problems Solved")]
+        public int ProblemsSolved { get; set; }
+
         [Display(Name = "Submitted Solution")]
         public string SubmittedSolution { get; set; }
     }

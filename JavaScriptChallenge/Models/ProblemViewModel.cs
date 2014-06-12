@@ -14,5 +14,8 @@ namespace JavaScriptChallenge.Models
 
         [Display(Name = "Unlocked")]
         public bool Unlocked { get; set; }
+
+        [Display(Name = "Solved")]
+        public bool Solved { get; set; }
     }
 }

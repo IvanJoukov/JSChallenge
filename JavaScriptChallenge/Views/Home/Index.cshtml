@@ -28,9 +28,22 @@
                     @Html.DisplayFor(modelItem => item.Unlocked)
                     @if (item.Unlocked)
                     {
-                        @Html.ActionLink("Start Problem", "Problem", "Home",   new { id = item.ProblemNumber }, null)
+                        if (item.Solved)
+                        {
+                             @Html.ActionLink("View Your Solution", "SolvedProblem", "Home", new { id = item.ProblemNumber }, null)
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Start Problem", "Problem", "Home", new { id = item.ProblemNumber }, null)
+                        }
                     }
                 </td>
+
+
+
+
+
+
 
             </tr>
         }

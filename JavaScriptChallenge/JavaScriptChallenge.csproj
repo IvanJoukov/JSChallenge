@@ -304,6 +304,8 @@
     <Content Include="Views\Problem\Details.cshtml" />
     <Content Include="Views\Problem\Edit.cshtml" />
     <Content Include="Views\Problem\Index.cshtml" />
+    <Content Include="Views\Leaderboard\OverallScores.cshtml" />
+    <Content Include="Views\Home\SolvedProblem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

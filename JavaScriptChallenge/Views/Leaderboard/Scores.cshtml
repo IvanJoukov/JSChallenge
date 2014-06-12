@@ -6,11 +6,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Scores for Problem @ViewBag.ProblemNumber</h2>
+<div>See Scores for Specific Problems or <a href="/Leaderboard/OverallScores">Overall Scores</a></div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+<ul class="pagination">
+    @foreach (int probNumber in ViewBag.AvailableProblems)
+    {
+        <li><a href="@probNumber">@probNumber</a></li>
+    }
+</ul>
+
 <table class="table">
     <tr>
         <th>
@@ -45,7 +50,7 @@
             @Html.DisplayFor(modelItem => item.FailedAttempts)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.SubmittedSolution)
+            @Html.TextAreaFor(modelItem => item.SubmittedSolution, new  { @class = "score-solution", @readonly = true })
         </td>
     </tr>
 }

@@ -1,0 +1,46 @@
+﻿
+@model IEnumerable<JavaScriptChallenge.Models.LeaderboardViewModel>
+
+@{
+    ViewBag.Title = "Leaders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Overall Leaderboard</h2>
+<div>See Scores for Specific Problems</div>
+<ul class="pagination">
+    @foreach (int probNumber in ViewBag.AvailableProblems)
+    {
+        <li><a href="Scores/@probNumber">@probNumber</a></li>
+    }
+</ul>
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Score)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProblemsSolved)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Score)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProblemsSolved)
+                </td>
+            </tr>
+        }
+
+    </table>

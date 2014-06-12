@@ -27,10 +27,12 @@ namespace JavaScriptChallenge.Controllers
                     ProblemTitle = s.FirstOrDefault().ProblemTitle,
                     Unlocked = false
                }).ToList();
-
+               var userId = User.Identity.GetUserId();
+               var thisUsersSolvedProblemNumbers = ctx.ProblemInstances.Where(p => p.UserId == userId && p.SolveTime != null).Select(p => p.Problem.ProblemNumber);
                foreach(var p in problems)
                {
                    p.Unlocked = ProblemUnlocked(p.ProblemNumber);
+                   p.Solved = thisUsersSolvedProblemNumbers.Contains(p.ProblemNumber);
                }
                return View(problems);
             }
@@ -122,6 +124,36 @@ namespace JavaScriptChallenge.Controllers
             ViewBag.StarterSolutionCode = problem.StarterSolutionCode;
 
             return View("Problem");
+        }
+
+        [Authorize]
+        public ActionResult SolvedProblem(int id)
+        {
+            ProblemInstance solvedProblem;
+            using (var ctx = new Entities())
+            {
+                var userId = User.Identity.GetUserId();
+                solvedProblem = ctx.ProblemInstances.FirstOrDefault(p => p.UserId == userId && p.Problem.ProblemNumber == id &&
+                    p.SolveTime != null);
+
+                if (solvedProblem != null)
+                {
+                    var problem = solvedProblem.Problem;
+                    ViewBag.problemInstance = problem.Id;
+
+                    ViewBag.ProblemId = problem.Id;
+                    ViewBag.ProblemInstanceId = solvedProblem.Id;
+                    ViewBag.ProblemDescription = problem.ProblemDescription;
+                    ViewBag.StarterSolutionCode = solvedProblem.SubmittedSolution;
+                    ViewBag.CorrectAnswer = solvedProblem.Problem.CorrectAnswer;
+                }
+                else
+                {
+                    return new HttpNotFoundResult();
+                }
+
+            }
+            return View("SolvedProblem");
         }
     
 
